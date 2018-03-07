@@ -1,13 +1,26 @@
 import SwiftShell
 import Commander
+import Foundation
+
+func exe(_ bash: String) {
+    print("> \(bash)")
+    let result = run(bash: bash)
+    if result.exitcode != 0 {
+        print("Failed...")
+        exit(-1)
+    }
+}
 
 let tool = command { (appName: String) in
-    run(bash: "git clone https://github.com/YusukeHosonuma/SPMTemplate.git spm_template")
-    run(bash: "mkdir \(appName)")
-    run(bash: "cat ./spm_template/Makefile | sed -e 's/{{APP_NAME}}/\(appName)/' > \(appName)/Makefile")
-    run(bash: "rm -rf spm_template")
+    // TODO: tempディレクトリにcloneしたほうが良い＋shallow cloneのほうが好ましい
+    exe("git clone https://github.com/YusukeHosonuma/SPMTemplate.git .spm_template")
+    exe("mkdir \(appName)")
+    exe("cat ./.spm_template/Makefile | sed -e 's/{{APP_NAME}}/\(appName)/' > \(appName)/Makefile")
+    exe("rm -rf .spm_template")
     main.currentdirectory = appName
-    run(bash: "swift package init --type executable")
-    run(bash: "swift package generate-xcodeproj")
+    exe("swift package init --type executable")
+    exe("swift package generate-xcodeproj")
+    print("")
+    print("Successful generate your app '\(appName)'.")
 }
 tool.run()

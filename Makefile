@@ -11,7 +11,7 @@ release-build:
 	swift build --disable-sandbox -c release -Xswiftc -static-stdlib
 
 run:
-	.build/debug/awesome_cli
+	.build/debug/spm-boot bar
 
 debug: build run
 
